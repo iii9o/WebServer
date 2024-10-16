@@ -71,11 +71,36 @@ int startup(unsigned short * port) {
 	return server_socket;
 }
 
+//处理用户请求的线程函数
+DWORD WINAPI accept_request(LPVOID arg) {
+
+}
+
 int main(void) {
 	unsigned short  port = 0 ;			
 	int server_socket = startup(&port);
 	printf("httpd服务已经启动，正在监听 %d 端口...", port);
+	struct sockaddr_in client_addr;
+	int client_addr_Len = sizeof(client_addr);
+	while (1) {
+		//阻塞式等待用户通过浏览器进行访问
+		//clientsocket(connection socket),与特定客户端进行通信
+		int client_socket = accept(server_socket,  //serversocket （listen Socket）只负责监听,不实际处理客户端与服务器之间的通讯
+			(struct sockaddr*)&client_addr,
+			&client_addr_Len);
+		if (client_socket == -1) {
+			error_die("accept");
+		}
+		//直接使用client_server对用户进行访问会导致拥塞
+		// 解决方法：创建新的线程,对client进行单独服务
+		// 进程可包含多个线程，线程之间共享内存互不隔离
+		DWORD threadId = 0;
+		CreateThread(0,0,accept_request
+			,(void*)client_socket
+			,0,&threadId);
+	}
 
+	closesocket(server_socket); 
 	system("pause");
 	return 0;
 }
