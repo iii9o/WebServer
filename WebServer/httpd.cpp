@@ -3,6 +3,8 @@
 //网络通信相关头文件和需要加载的库文件
 #include <WinSock2.h>
 #pragma comment(lib,"WS2_32.lib")
+#define PRINT(str)  printf("[%s-%d]%s", __func__, __LINE__, str)
+
 void error_die(const char* str) {
 	perror(str);
 	exit(1);
@@ -70,14 +72,47 @@ int startup(unsigned short * port) {
 
 	return server_socket;
 }
+//从指定的客户端套接字socket中读取一行数据保存在buff中
+//返回实际读取到的字节数
+int get_line(int socket,char* buff,int size) {
+	char c = 0;
+	int i = 0;
+	//真实的网络请求时以“\r\n”结尾
+	while (i<size-1 && c!='\n') {
+		int n = recv(socket, &c, 1, 0);
+		if (n > 0) {
+			if (c == '\r') {
+				n = recv(socket, &c, 1, MSG_PEEK);
+				if (n > 0 && c == '\n') {
+					recv(socket, &c, 1, 0);
+				}
+				else {
+					c = '\n';
+				}
+			}
+			buff[i++] = c;
+		}
+		else {
+			//to do
+			c = '\n';
+		}
+	}
+	buff[i] = 0;
+	return i;
+}
 
 //处理用户请求的线程函数
 DWORD WINAPI accept_request(LPVOID arg) {
-
+	//读取一行数据
+	char buff[1024]; //
+	int client = (SOCKET)arg;
+	int numchars = get_line(client,buff,sizeof(buff));
+	PRINT(buff);
+	return 0;
 }
 
 int main(void) {
-	unsigned short  port = 0 ;			
+	unsigned short  port = 8000 ;			
 	int server_socket = startup(&port);
 	printf("httpd服务已经启动，正在监听 %d 端口...", port);
 	struct sockaddr_in client_addr;
