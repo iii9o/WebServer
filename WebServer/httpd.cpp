@@ -1,10 +1,13 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys\types.h>
+#include <sys\stat.h>
 //网络通信相关头文件和需要加载的库文件
 #include <WinSock2.h>
 #pragma comment(lib,"WS2_32.lib")
-#define PRINT(str)  printf("[%s-%d]%s", __func__, __LINE__, str)
-
+#define PRINTF(str)  printf("[%s-%d]"#str"=%s\n", __func__, __LINE__, str)
+#pragma warning(push)
+#pragma warning(disable: 4996)
 void error_die(const char* str) {
 	perror(str);
 	exit(1);
@@ -100,21 +103,191 @@ int get_line(int socket,char* buff,int size) {
 	buff[i] = 0;
 	return i;
 }
+void unimplement(int client) {
+	//向指定的socket,返送还没有实现的界面
+}
+void not_found(int client) {
+	char buff[1024];
+	strcpy(buff, "HTTP/1.0 404 NOT FOUND\r\n");
+	send(client, buff, strlen(buff), 0);
+	strcpy(buff, "Server:PBHpptd/0.1\r\n");
+	send(client, buff, strlen(buff), 0);
+	strcpy(buff, "Content-Type: text/html\r\n");
+	send(client, buff, strlen(buff), 0); 
+	/*char buf[1024];
+	sprintf(buf, "Content-Type: %s\r\n", type);
+	send(client, buf, strlen(buf), 0);*/
 
+	strcpy(buff, "\r\n");
+	send(client, buff, strlen(buff), 0);
+	sprintf(buff,
+		"<html>\r\n"
+		"  <head><title>404 Not Found</title></head>\r\n"
+		"  <body>\r\n"
+		"    <h1>404 Not Found</h1>\r\n"
+		"    <p>The requested URL was not found on this server.</p>\r\n"
+		"  </body>\r\n"
+		"</html>\r\n");
+	send(client, buff, strlen(buff), 0);
+
+}
+void headers(int client,const char* type) {
+	//发送响应包的头信息
+	char buff[1024];
+	strcpy(buff, "HTTP/1.0 200 OK\r\n");
+	send(client, buff, strlen(buff), 0);
+	strcpy(buff, "Server:PBHpptd/0.1\r\n");
+	send(client, buff, strlen(buff), 0);
+
+	char buf[1024];
+	sprintf(buf, "Content-Type: %s\r\n",type);
+	send(client, buf, strlen(buf), 0);
+
+	strcpy(buff, "\r\n");
+	send(client, buff, strlen(buff), 0);
+}
+
+//12345
+void cat(int client, FILE* resource) {
+	char buff[4096];
+	int count = 0;
+	while (1) {
+		int ret = fread(buff, sizeof(char), sizeof(buff), resource);
+		if (ret <= 0) {
+			break;
+		}
+		send(client, buff, ret, 0);
+		count += ret;
+	}
+	printf("一共发送[%d]字节给服务器\n",count);
+}
+void server_file(int client, const char* filename) {
+	int numchars = 1;
+	char type[1024];
+	char buff[1024];
+	// 把剩余的请求头读完
+	while (numchars > 0 && strcmp(buff, "\n")) {
+		numchars = get_line(client, buff, sizeof(buff));
+		PRINTF(buff);
+	}
+
+	FILE* resource = NULL;
+	if (strcmp(filename, "htdocs/index.html") == 0) {
+		resource = fopen(filename, "r");
+		strcpy(type, "text/html"); // 设置 HTML 类型
+	}
+	else if (strcmp(filename + strlen(filename) - 4, ".css") == 0) {
+		resource = fopen(filename, "rb");
+		strcpy(type, "text/css"); // 设置 CSS 类型
+	}
+	else if (strcmp(filename + strlen(filename) - 3, ".js") == 0) {
+		resource = fopen(filename, "rb");
+		strcpy(type, "application/javascript"); // 设置 JavaScript 类型
+	}
+	else if (strcmp(filename + strlen(filename) - 4, ".png") == 0) {
+		resource = fopen(filename, "rb");
+		strcpy(type, "image/png"); // 设置 PNG 图像类型
+	}
+	else if (strcmp(filename + strlen(filename) - 4, ".jpg") == 0 || strcmp(filename + strlen(filename) - 5, ".jpeg") == 0) {
+		resource = fopen(filename, "rb");
+		strcpy(type, "image/jpeg"); // 设置 JPEG 图像类型
+	}
+	else  if (strcmp(filename + strlen(filename) - 4, ".ico") == 0) {
+		resource = fopen(filename, "r");
+		strcpy(type, "text/html"); // 设置 PNG 图像类型
+	}
+	else {
+		not_found(client); // 如果文件类型未知，返回 404
+		return;
+	}
+	if (resource == NULL) {
+		not_found(client);
+	}
+	else {
+		//正式发送资源给浏览器
+		headers(client,type);
+		//发送请求的资源信息
+		cat(client, resource);
+
+		printf("文件资源发送完毕");
+	}
+	if (resource == NULL) {
+		not_found(client);
+	}
+	else {
+		// 在这里确保 resource 是有效的
+		fclose(resource);  // 只有在 resource 不为 NULL 时才调用 fclose
+	}
+
+}
 //处理用户请求的线程函数
 DWORD WINAPI accept_request(LPVOID arg) {
 	//读取一行数据
 	char buff[1024]; //
 	int client = (SOCKET)arg;
 	int numchars = get_line(client,buff,sizeof(buff));
-	PRINT(buff);
+	PRINTF(buff);
+	char method[255];
+	int j = 0;
+	int i = 0;
+	while (isspace(buff[j]) && j < sizeof(buff)) {
+		j++;
+	}
+	while (!isspace(buff[j]) && i<sizeof(method)-1) {
+		method[i++] = buff[j++];
+	}
+	method[i] = 0;
+	PRINTF(method);
+	//检查服务器是否支持该方法
+	if (_stricmp(method, "GET") && _stricmp(method, "POST")) {
+		//返回错误揭秘那
+		//todo
+		unimplement(client);
+		return 0;
+	}
+	//解析资源路径
+	char url[255];  //存放资源请求路径
+	while (isspace(buff[j]) && j < sizeof(buff)) {
+		j++;
+	}
+	i = 0;
+	while (!isspace(buff[j]) && i < sizeof(url)-1 && j<sizeof(buff)) {
+		url[i++] = buff[j++];
+	}
+	url[i] = 0;
+	PRINTF(url);
+	//127.0.0.1
+	//url / 
+	// htdocs/index.html
+	char path[512] = "";
+	sprintf_s(path,"htdocs%s",url);
+		if (path[strlen(path)-1]=='/') {
+			strcat_s(path, "index.html");
+		}
+		PRINTF(path);
+		struct stat status;
+		if (stat(path, &status) == -1) {
+			while (numchars > 0 && strcmp(buff,"\n")) { //和b站不同
+			numchars = get_line(client, buff, sizeof(buff));
+			}
+			not_found(client);
+		}
+		else {
+			if ((status.st_mode & S_IFMT) == S_IFDIR) {
+				strcat_s(path, "/index");
+			}
+		}
+		server_file(client, path);
+
+		closesocket(client);
+
 	return 0;
 }
 
 int main(void) {
-	unsigned short  port = 8000 ;			
+	unsigned short  port = 80 ;			
 	int server_socket = startup(&port);
-	printf("httpd服务已经启动，正在监听 %d 端口...", port);
+	printf("httpd服务已经启动，正在监听 %d 端口...\n", port);
 	struct sockaddr_in client_addr;
 	int client_addr_Len = sizeof(client_addr);
 	while (1) {
@@ -136,6 +309,11 @@ int main(void) {
 	}
 
 	closesocket(server_socket); 
+	WSACleanup();
 	system("pause");
 	return 0;
 }
+
+
+
+#pragma warning(pop)
