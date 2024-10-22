@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "C:\\Users\\Lace\\source\\repos\\WebServer\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A32302AC-18F4-46DC-BC0A-F051C273FDF4}|CGI\\CGI.vcxproj|C:\\Users\\Lace\\source\\repos\\WebServer\\CGI\\cgi.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A32302AC-18F4-46DC-BC0A-F051C273FDF4}|CGI\\CGI.vcxproj|solutionrelative:CGI\\cgi.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{1C68F430-FDA2-44D2-BED7-548F3CB3E540}|WebServer\\WebServer.vcxproj|C:\\Users\\Lace\\source\\repos\\WebServer\\WebServer\\httpd.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{1C68F430-FDA2-44D2-BED7-548F3CB3E540}|WebServer\\WebServer.vcxproj|solutionrelative:WebServer\\httpd.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
@@ -23,12 +27,25 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "cgi.cpp",
+              "DocumentMoniker": "C:\\Users\\Lace\\source\\repos\\WebServer\\CGI\\cgi.cpp",
+              "RelativeDocumentMoniker": "CGI\\cgi.cpp",
+              "ToolTip": "C:\\Users\\Lace\\source\\repos\\WebServer\\CGI\\cgi.cpp",
+              "RelativeToolTip": "CGI\\cgi.cpp",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAYwB4AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-20T09:23:02.508Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "httpd.cpp",
               "DocumentMoniker": "C:\\Users\\Lace\\source\\repos\\WebServer\\WebServer\\httpd.cpp",
               "RelativeDocumentMoniker": "WebServer\\httpd.cpp",
               "ToolTip": "C:\\Users\\Lace\\source\\repos\\WebServer\\WebServer\\httpd.cpp",
               "RelativeToolTip": "WebServer\\httpd.cpp",
-              "ViewState": "AgIAAHEAAAAAAAAAAAAAAIIAAAAlAAAAAAAAAA==",
+              "ViewState": "AgIAAKAAAAAAAAAAAAAYwLEAAAAeAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2024-10-16T09:22:41.552Z",
               "EditorCaption": ""

@@ -5,12 +5,13 @@ C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(114,27): warning C4267:
 C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(116,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
 C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(122,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
 C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(131,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(138,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(140,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(144,26): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(147,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(155,11): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(227,13): warning C4244: “初始化”: 从“SOCKET”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(296,21): warning C4244: “初始化”: 从“SOCKET”转换到“int”，可能丢失数据
-C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(307,5): warning C4312: “类型强制转换”: 从“int”转换到更大的“void *”
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(154,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(156,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(160,26): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(163,27): warning C4267: “参数”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(171,11): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(182,7): warning C4101: “type”: 未引用的局部变量
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(223,13): warning C4244: “初始化”: 从“SOCKET”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(292,21): warning C4244: “初始化”: 从“SOCKET”转换到“int”，可能丢失数据
+C:\Users\Lace\source\repos\WebServer\WebServer\httpd.cpp(303,5): warning C4312: “类型强制转换”: 从“int”转换到更大的“void *”
   WebServer.vcxproj -> C:\Users\Lace\source\repos\WebServer\x64\Debug\WebServer.exe

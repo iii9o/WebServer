@@ -130,6 +130,22 @@ void not_found(int client) {
 		"</html>\r\n");
 	send(client, buff, strlen(buff), 0);
 
+
+}
+
+const char* getHeadTypes(const char* fileName) {
+	const char* ret = "text/html";
+	const char* p = strrchr(fileName, '.');
+	if (!p) return ret;
+
+	p++;
+	if (!strcmp(p, "css")) ret = "text/css";
+	else if (!strcmp(p, "jpg")) ret = "image/jepg";
+	else if (!strcmp(p, "png")) ret = "image/png";
+	else if (!strcmp(p, "js")) ret = "application/x-javascript";
+	else if (!strcmp(p, "jepg")) ret = "image/jepg";
+
+	return ret;
 }
 void headers(int client,const char* type) {
 	//发送响应包的头信息
@@ -172,40 +188,20 @@ void server_file(int client, const char* filename) {
 	}
 
 	FILE* resource = NULL;
+
 	if (strcmp(filename, "htdocs/index.html") == 0) {
-		resource = fopen(filename, "r");
-		strcpy(type, "text/html"); // 设置 HTML 类型
-	}
-	else if (strcmp(filename + strlen(filename) - 4, ".css") == 0) {
-		resource = fopen(filename, "rb");
-		strcpy(type, "text/css"); // 设置 CSS 类型
-	}
-	else if (strcmp(filename + strlen(filename) - 3, ".js") == 0) {
-		resource = fopen(filename, "rb");
-		strcpy(type, "application/javascript"); // 设置 JavaScript 类型
-	}
-	else if (strcmp(filename + strlen(filename) - 4, ".png") == 0) {
-		resource = fopen(filename, "rb");
-		strcpy(type, "image/png"); // 设置 PNG 图像类型
-	}
-	else if (strcmp(filename + strlen(filename) - 4, ".jpg") == 0 || strcmp(filename + strlen(filename) - 5, ".jpeg") == 0) {
-		resource = fopen(filename, "rb");
-		strcpy(type, "image/jpeg"); // 设置 JPEG 图像类型
-	}
-	else  if (strcmp(filename + strlen(filename) - 4, ".ico") == 0) {
-		resource = fopen(filename, "r");
-		strcpy(type, "text/html"); // 设置 PNG 图像类型
+		resource = fopen(filename, "r"); 
 	}
 	else {
-		not_found(client); // 如果文件类型未知，返回 404
-		return;
+		resource = fopen(filename, "rb");
 	}
+
 	if (resource == NULL) {
 		not_found(client);
 	}
 	else {
 		//正式发送资源给浏览器
-		headers(client,type);
+		headers(client,getHeadTypes(filename));
 		//发送请求的资源信息
 		cat(client, resource);
 
